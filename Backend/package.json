@@ -1,0 +1,16 @@
+{
+  "name": "eeuez-assist-backend",
+  "version": "2.0.0",
+  "description": "Backend Node.js pour EEUEZ-Assist avec OAuth, MongoDB et Gemini API",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["chatbot", "gemini", "nodejs", "oauth", "mongodb", "eeuez"],
+  "author": "Équipe EEUEZ - Hackathon G3",
+  "license": "ISC",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
