@@ -45,6 +45,40 @@ export const getCourseById = async (req: Request, res: Response) => {
         const [lessons]: any = await pool.execute('SELECT * FROM lessons WHERE course_id = ? ORDER BY order_index ASC', [id]);
         course.lessons = lessons;
 
+        // Get quizzes with questions and options
+        // This is a simplified fetch. For production, consider a more efficient join or separate endpoints if data is large.
+        const [quizzes]: any = await pool.execute('SELECT * FROM quizzes WHERE course_id = ? ORDER BY order_index ASC', [id]);
+
+        for (const quiz of quizzes) {
+            const [questions]: any = await pool.execute('SELECT * FROM quiz_questions WHERE quiz_id = ? ORDER BY order_index ASC', [quiz.id]);
+
+            const questionsData = [];
+            for (const question of questions) {
+                const [options]: any = await pool.execute('SELECT * FROM quiz_question_options WHERE question_id = ? ORDER BY order_index ASC', [question.id]);
+
+                questionsData.push({
+                    id: question.id,
+                    question_text: question.question_text,
+                    options: options.map((o: any) => o.option_text),
+                    correctAnswer: options.findIndex((o: any) => o.is_correct),
+                    points: question.points
+                });
+            }
+
+            // Map to new Quiz interface (supporting multiple questions)
+            quiz.questions = questionsData;
+
+            // Legacy support for old frontend (optional, can remove if fully switching)
+            if (questionsData.length > 0) {
+                quiz.question = questionsData[0].question_text;
+                quiz.options = questionsData[0].options;
+                quiz.correctAnswer = questionsData[0].correctAnswer;
+            }
+        }
+
+        // Filter out quizzes that don't have questions ? Or keep them empty
+        course.quizzes = quizzes;
+
         res.json(course);
     } catch (error) {
         console.error(error);

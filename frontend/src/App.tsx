@@ -17,8 +17,9 @@ import { Profile } from './pages/Profile'
 import { Evaluations } from './pages/Evaluations'
 import { LandingPage } from './pages/LandingPage'
 import { Certifications } from './pages/Certifications'
+import { CourseDetail } from './pages/CourseDetail'
 import { useState } from 'react'
-import { Course } from './data/mockData'
+import { Course } from './types'
 
 // Role-based route protection
 const RoleProtectedRoute = ({
@@ -92,6 +93,11 @@ const ProtectedRoutes = () => {
                 <Route path="/course-management" element={
                     <RoleProtectedRoute allowedRoles={['TEACHER', 'ADMIN']}>
                         <CourseManagement />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/course/:courseId" element={
+                    <RoleProtectedRoute allowedRoles={['TEACHER', 'ADMIN']}>
+                        <CourseDetail />
                     </RoleProtectedRoute>
                 } />
 

@@ -4,7 +4,7 @@ import { Users, PlusCircle, Trash2, Mail, ShieldCheck, UserMinus } from 'lucide-
 import { useData } from '../context/DataContext';
 import { usersAPI } from '../services/api';
 import { Modal } from './Modal';
-import { User } from '../data/mockData';
+import { User } from '../types';
 
 export const TeacherManagement = () => {
     const { courses } = useData();

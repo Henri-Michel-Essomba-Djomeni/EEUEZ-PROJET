@@ -1,15 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { PlusCircle, Edit3, Trash2, Eye, Play, PlusSquare, FileVideo, BookOpen } from 'lucide-react';
+import { Plus, Search, Edit2, Trash2, BookOpen, Clock, Users, MoreVertical, X, Eye, Video, PlusSquare } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import { useAuth } from '../context/AuthContext';
 import { coursesAPI } from '../services/api';
-import { Modal } from './Modal';
-import { Course } from '../data/mockData';
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogFooter,
+} from "./ui/dialog";
+import { Course } from '../types';
 
 export const CourseManagement = () => {
-    const { courses, addCourse, deleteCourse } = useData();
+    const { courses, refreshData } = useData();
     const { user } = useAuth();
+    const navigate = useNavigate();
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     // Form State
@@ -38,28 +46,9 @@ export const CourseManagement = () => {
                 duration: '0h' // Default duration
             };
 
-            const createdCourse = await coursesAPI.createCourse(courseData);
+            await coursesAPI.createCourse(courseData);
+            await refreshData();
 
-            // Update local context with the created course
-            const course: Course = {
-                id: createdCourse.id.toString(),
-                title: courseData.title,
-                description: courseData.description,
-                category: courseData.category,
-                instructor: user?.name || 'Instructeur',
-                instructorId: user?.id || '2',
-                thumbnail: courseData.thumbnail,
-                lessons: [],
-                quizzes: [],
-                rating: 0,
-                enrolled: false,
-                isLocked: false,
-                lessonsCount: 0,
-                studentCount: 0,
-                duration: courseData.duration
-            };
-
-            addCourse(course);
             setIsModalOpen(false);
             setNewCourse({
                 title: '',
@@ -79,7 +68,7 @@ export const CourseManagement = () => {
         if (!confirm("Êtes-vous sûr de vouloir supprimer ce cours ?")) return;
         try {
             await coursesAPI.deleteCourse(id);
-            deleteCourse(id); // Update context state
+            await refreshData();
         } catch (error) {
             console.error("Failed to delete course", error);
             alert("Impossible de supprimer le cours.");
@@ -118,7 +107,7 @@ export const CourseManagement = () => {
                                 <img src={course.thumbnail} alt={course.title} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
                                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                     <button className="p-3 bg-white/20 backdrop-blur-md rounded-full text-white hover:bg-white/40 transition-colors">
-                                        <Edit3 size={20} />
+                                        <Edit2 size={20} />
                                     </button>
                                 </div>
                             </div>
@@ -147,10 +136,13 @@ export const CourseManagement = () => {
                                 <div className="p-4 rounded-2xl bg-secondary/50 border border-border/50 divide-y divide-border/50">
                                     <div className="pb-3 flex items-center justify-between">
                                         <div className="text-sm font-bold flex items-center gap-2">
-                                            <FileVideo size={16} className="text-slate-500" />
+                                            <Video size={16} className="text-slate-500" />
                                             {course.lessons?.length || 0} Leçons publiées
                                         </div>
-                                        <button className="text-[10px] font-bold uppercase tracking-widest text-brand-400 hover:underline">
+                                        <button
+                                            onClick={() => navigate(`/course/${course.id}`)}
+                                            className="text-[10px] font-bold uppercase tracking-widest text-brand-400 hover:underline"
+                                        >
                                             Gérer le contenu
                                         </button>
                                     </div>
@@ -179,48 +171,56 @@ export const CourseManagement = () => {
                 ))}
             </div>
 
-            <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Créer un nouveau cours">
-                <form onSubmit={handleCreate} className="space-y-4">
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Titre du cours</label>
-                        <input
-                            type="text"
-                            required
-                            value={newCourse.title}
-                            onChange={e => setNewCourse({ ...newCourse, title: e.target.value })}
-                            className="w-full px-4 py-2 rounded-xl bg-secondary border border-border focus:ring-2 focus:ring-brand-500 outline-none"
-                            placeholder="Ex: Introduction à React"
-                        />
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Catégorie</label>
-                        <select
-                            value={newCourse.category}
-                            onChange={e => setNewCourse({ ...newCourse, category: e.target.value })}
-                            className="w-full px-4 py-2 rounded-xl bg-secondary border border-border focus:ring-2 focus:ring-brand-500 outline-none"
-                        >
-                            <option>Développement Web</option>
-                            <option>Design</option>
-                            <option>Marketing</option>
-                            <option>Business</option>
-                            <option>Data</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label className="block text-sm font-medium mb-1">Description courte</label>
-                        <textarea
-                            required
-                            value={newCourse.description}
-                            onChange={e => setNewCourse({ ...newCourse, description: e.target.value })}
-                            className="w-full px-4 py-2 rounded-xl bg-secondary border border-border focus:ring-2 focus:ring-brand-500 outline-none min-h-[100px]"
-                            placeholder="Décrivez le contenu du cours..."
-                        />
-                    </div>
-                    <button type="submit" className="w-full py-3 bg-brand-500 hover:bg-brand-600 text-white rounded-xl font-bold mt-4 shadow-lg shadow-brand-500/20">
-                        Créer le cours
-                    </button>
-                </form>
-            </Modal>
+            <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Créer un nouveau cours</DialogTitle>
+                    </DialogHeader>
+
+                    <form onSubmit={handleCreate} className="space-y-4 py-4">
+                        <div>
+                            <label className="block text-sm font-medium mb-1">Titre du cours</label>
+                            <input
+                                type="text"
+                                required
+                                value={newCourse.title}
+                                onChange={e => setNewCourse({ ...newCourse, title: e.target.value })}
+                                className="w-full px-4 py-2 rounded-xl bg-secondary border border-border focus:ring-2 focus:ring-brand-500 outline-none"
+                                placeholder="Ex: Introduction à React"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium mb-1">Catégorie</label>
+                            <select
+                                value={newCourse.category}
+                                onChange={e => setNewCourse({ ...newCourse, category: e.target.value })}
+                                className="w-full px-4 py-2 rounded-xl bg-secondary border border-border focus:ring-2 focus:ring-brand-500 outline-none"
+                            >
+                                <option>Développement Web</option>
+                                <option>Design</option>
+                                <option>Marketing</option>
+                                <option>Business</option>
+                                <option>Data</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium mb-1">Description courte</label>
+                            <textarea
+                                required
+                                value={newCourse.description}
+                                onChange={e => setNewCourse({ ...newCourse, description: e.target.value })}
+                                className="w-full px-4 py-2 rounded-xl bg-secondary border border-border focus:ring-2 focus:ring-brand-500 outline-none min-h-[100px]"
+                                placeholder="Décrivez le contenu du cours..."
+                            />
+                        </div>
+                        <DialogFooter>
+                            <button type="submit" className="w-full py-3 bg-brand-500 hover:bg-brand-600 text-white rounded-xl font-bold mt-4 shadow-lg shadow-brand-500/20">
+                                Créer le cours
+                            </button>
+                        </DialogFooter>
+                    </form>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 };

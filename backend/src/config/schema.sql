@@ -78,6 +78,7 @@ CREATE TABLE IF NOT EXISTS course_ratings (
     FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
 );
 
+
 -- Certifications Table
 CREATE TABLE IF NOT EXISTS certifications (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -88,4 +89,67 @@ CREATE TABLE IF NOT EXISTS certifications (
     score INT,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
+);
+
+-- Quizzes/Evaluations Table
+CREATE TABLE IF NOT EXISTS quizzes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    course_id INT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    passing_score INT DEFAULT 70,
+    duration_minutes INT,
+    order_index INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (course_id) REFERENCES courses(id) ON DELETE CASCADE
+);
+
+-- Quiz Questions Table
+CREATE TABLE IF NOT EXISTS quiz_questions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    quiz_id INT NOT NULL,
+    question_text TEXT NOT NULL,
+    question_type ENUM('multiple_choice', 'true_false', 'short_answer') NOT NULL,
+    points INT DEFAULT 1,
+    order_index INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (quiz_id) REFERENCES quizzes(id) ON DELETE CASCADE
+);
+
+-- Quiz Question Options Table (for multiple choice questions)
+CREATE TABLE IF NOT EXISTS quiz_question_options (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    question_id INT NOT NULL,
+    option_text TEXT NOT NULL,
+    is_correct BOOLEAN DEFAULT FALSE,
+    order_index INT NOT NULL,
+    FOREIGN KEY (question_id) REFERENCES quiz_questions(id) ON DELETE CASCADE
+);
+
+-- Quiz Submissions Table
+CREATE TABLE IF NOT EXISTS quiz_submissions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    quiz_id INT NOT NULL,
+    score INT,
+    max_score INT,
+    passed BOOLEAN DEFAULT FALSE,
+    submitted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (quiz_id) REFERENCES quizzes(id) ON DELETE CASCADE
+);
+
+-- Quiz Answers Table
+CREATE TABLE IF NOT EXISTS quiz_answers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    submission_id INT NOT NULL,
+    question_id INT NOT NULL,
+    selected_option_id INT,
+    answer_text TEXT,
+    is_correct BOOLEAN,
+    points_earned INT DEFAULT 0,
+    FOREIGN KEY (submission_id) REFERENCES quiz_submissions(id) ON DELETE CASCADE,
+    FOREIGN KEY (question_id) REFERENCES quiz_questions(id) ON DELETE CASCADE,
+    FOREIGN KEY (selected_option_id) REFERENCES quiz_question_options(id) ON DELETE SET NULL
 );

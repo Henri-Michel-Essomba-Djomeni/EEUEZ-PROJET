@@ -4,7 +4,7 @@ import { Users, PlusCircle, Trash2, Mail, BookOpen, UserMinus, Award } from 'luc
 import { useData } from '../context/DataContext';
 import { usersAPI } from '../services/api';
 import { Modal } from './Modal';
-import { User } from '../data/mockData';
+import { User } from '../types';
 
 export const StudentManagement = () => {
     const { courses } = useData();

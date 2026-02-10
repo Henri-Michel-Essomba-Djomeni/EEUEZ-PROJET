@@ -198,6 +198,105 @@ export const certificationsAPI = {
     }
 };
 
+// Lessons API
+export const lessonsAPI = {
+    getLessonsByCourse: async (courseId: string) => {
+        const response = await fetch(`${API_BASE_URL}/lessons/course/${courseId}`);
+        return response.json();
+    },
+
+    getLessonById: async (id: string) => {
+        const response = await fetch(`${API_BASE_URL}/lessons/${id}`);
+        return response.json();
+    },
+
+    createLesson: async (data: any) => {
+        const response = await fetchWithAuth(`${API_BASE_URL}/lessons`, {
+            method: 'POST',
+            body: JSON.stringify(data),
+        });
+        return response.json();
+    },
+
+    updateLesson: async (id: string, data: any) => {
+        const response = await fetchWithAuth(`${API_BASE_URL}/lessons/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify(data),
+        });
+        return response.json();
+    },
+
+    deleteLesson: async (id: string) => {
+        const response = await fetchWithAuth(`${API_BASE_URL}/lessons/${id}`, {
+            method: 'DELETE',
+        });
+        return response.json();
+    },
+
+    reorderLessons: async (courseId: string, lessonOrders: any[]) => {
+        const response = await fetchWithAuth(`${API_BASE_URL}/lessons/reorder/course`, {
+            method: 'PUT',
+            body: JSON.stringify({ course_id: courseId, lesson_orders: lessonOrders }),
+        });
+        return response.json();
+    },
+};
+
+// Evaluations API
+export const evaluationsAPI = {
+    getQuizzesByCourse: async (courseId: string) => {
+        const response = await fetch(`${API_BASE_URL}/evaluations/course/${courseId}`);
+        return response.json();
+    },
+
+    getQuizById: async (id: string) => {
+        const response = await fetch(`${API_BASE_URL}/evaluations/${id}`);
+        return response.json();
+    },
+
+    createQuiz: async (data: any) => {
+        const response = await fetchWithAuth(`${API_BASE_URL}/evaluations`, {
+            method: 'POST',
+            body: JSON.stringify(data),
+        });
+        return response.json();
+    },
+
+    updateQuiz: async (id: string, data: any) => {
+        const response = await fetchWithAuth(`${API_BASE_URL}/evaluations/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify(data),
+        });
+        return response.json();
+    },
+
+    deleteQuiz: async (id: string) => {
+        const response = await fetchWithAuth(`${API_BASE_URL}/evaluations/${id}`, {
+            method: 'DELETE',
+        });
+        return response.json();
+    },
+
+    submitQuiz: async (quizId: string, answers: any[]) => {
+        const response = await fetchWithAuth(`${API_BASE_URL}/evaluations/${quizId}/submit`, {
+            method: 'POST',
+            body: JSON.stringify({ answers }),
+        });
+        return response.json();
+    },
+
+    getQuizSubmissions: async (quizId: string) => {
+        const response = await fetchWithAuth(`${API_BASE_URL}/evaluations/${quizId}/submissions`);
+        return response.json();
+    },
+
+    getMySubmissions: async () => {
+        const response = await fetchWithAuth(`${API_BASE_URL}/evaluations/my-submissions/all`);
+        return response.json();
+    },
+};
+
+
 // Storage utilities
 export const storage = {
     setToken: (token: string) => {

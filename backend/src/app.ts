@@ -14,6 +14,8 @@ import courseRoutes from './routes/courseRoutes';
 import progressRoutes from './routes/progressRoutes';
 import userRoutes from './routes/userRoutes';
 import certificationRoutes from './routes/certificationRoutes';
+import lessonRoutes from './routes/lessonRoutes';
+import evaluationRoutes from './routes/evaluationRoutes';
 
 // Middleware
 app.use(cors());
@@ -27,6 +29,8 @@ app.use('/api/courses', courseRoutes);
 app.use('/api/progress', progressRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/certifications', certificationRoutes);
+app.use('/api/lessons', lessonRoutes);
+app.use('/api/evaluations', evaluationRoutes);
 
 // Health Check Route
 app.get('/api/health', async (req: Request, res: Response) => {
