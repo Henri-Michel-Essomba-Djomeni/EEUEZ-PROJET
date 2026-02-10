@@ -1,0 +1,32 @@
+# Variables d'environnement (CLÉ API, CREDENTIALS)
+.env
+.env.local
+.env.production
+
+# Dépendances Node.js
+node_modules/
+package-lock.json
+
+# Base de données locale
+*.db
+*.sqlite
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+npm-debug.log*
+logs/
+
+# Éditeurs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build
+dist/
+build/
