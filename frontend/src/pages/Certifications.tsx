@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Award, Download, Share2, Trophy, Star } from 'lucide-react';
+import { certificationsAPI } from '../services/api';
 
 interface Certificate {
     id: string;
@@ -8,14 +9,27 @@ interface Certificate {
     issueDate: string;
     instructor: string;
     score: number;
+    certificateCode?: string;
 }
 
-const MOCK_CERTIFICATES: Certificate[] = [
-    { id: '1', courseTitle: 'React Avancé', issueDate: '2024-02-05', instructor: 'Prof. Jean Dupont', score: 90 },
-    { id: '2', courseTitle: 'TypeScript Mastery', issueDate: '2024-02-03', instructor: 'Marie Lopez', score: 85 },
-];
-
 export const Certifications = () => {
+    const [certificates, setCertificates] = useState<Certificate[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchCerts = async () => {
+            try {
+                const data = await certificationsAPI.getMyCertifications();
+                setCertificates(data);
+            } catch (error) {
+                console.error("Failed to fetch certifications", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchCerts();
+    }, []);
+
     return (
         <div className="space-y-8">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -27,9 +41,11 @@ export const Certifications = () => {
                 </div>
             </div>
 
-            {MOCK_CERTIFICATES.length > 0 ? (
+            {isLoading ? (
+                <div className="text-center py-10">Chargement...</div>
+            ) : certificates.length > 0 ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {MOCK_CERTIFICATES.map((cert, i) => (
+                    {certificates.map((cert, i) => (
                         <motion.div
                             key={cert.id}
                             initial={{ opacity: 0, scale: 0.95 }}

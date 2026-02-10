@@ -10,7 +10,8 @@ import {
     UserCircle,
     PlusSquare,
     Award,
-    ClipboardCheck
+    ClipboardCheck,
+    UsersRound
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -50,7 +51,9 @@ export const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
         ],
         ADMIN: [
             { id: 'dashboard', path: '/dashboard', icon: LayoutDashboard, label: 'Statistiques' },
-            { id: 'teacher-management', path: '/teacher-management', icon: Users, label: 'Gestion Enseignants' },
+            { id: 'course-management', path: '/course-management', icon: BookOpen, label: 'Gestion Cours' },
+            { id: 'student-management', path: '/student-management', icon: GraduationCap, label: 'Gestion Étudiants' },
+            { id: 'teacher-management', path: '/teacher-management', icon: UsersRound, label: 'Gestion Enseignants' },
         ]
     };
 

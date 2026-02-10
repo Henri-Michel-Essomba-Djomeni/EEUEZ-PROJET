@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { PlusCircle, Edit3, Trash2, Eye, Play, PlusSquare, FileVideo, BookOpen } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import { useAuth } from '../context/AuthContext';
+import { coursesAPI } from '../services/api';
 import { Modal } from './Modal';
 import { Course } from '../data/mockData';
 
@@ -23,35 +24,66 @@ export const CourseManagement = () => {
 
     const teacherCourses = courses.filter(c => user?.role === 'ADMIN' || c.instructorId === user?.id || c.instructorId === '2'); // Show demo courses for now if ID doesn't match
 
-    const handleCreate = (e: React.FormEvent) => {
+    const handleCreate = async (e: React.FormEvent) => {
         e.preventDefault();
-        const course: Course = {
-            id: Date.now().toString(),
-            title: newCourse.title || 'Sans titre',
-            description: newCourse.description || '',
-            category: newCourse.category || 'Général',
-            instructor: user?.name || 'Instructeur',
-            instructorId: user?.id || '2',
-            thumbnail: newCourse.thumbnail || '',
-            lessons: [],
-            quizzes: [],
-            rating: 0,
-            enrolled: false,
-            isLocked: false,
-            lessonsCount: 0,
-            studentCount: 0,
-            duration: '0h'
-        };
-        addCourse(course);
-        setIsModalOpen(false);
-        setNewCourse({
-            title: '',
-            category: 'Développement Web',
-            description: '',
-            thumbnail: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=800',
-            lessons: [],
-            quizzes: []
-        });
+
+        try {
+            // Call backend API to create course
+            const courseData = {
+                title: newCourse.title || 'Sans titre',
+                description: newCourse.description || '',
+                category: newCourse.category || 'Général',
+                thumbnail: newCourse.thumbnail || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=800',
+                level: 'Débutant', // Default level
+                duration: '0h' // Default duration
+            };
+
+            const createdCourse = await coursesAPI.createCourse(courseData);
+
+            // Update local context with the created course
+            const course: Course = {
+                id: createdCourse.id.toString(),
+                title: courseData.title,
+                description: courseData.description,
+                category: courseData.category,
+                instructor: user?.name || 'Instructeur',
+                instructorId: user?.id || '2',
+                thumbnail: courseData.thumbnail,
+                lessons: [],
+                quizzes: [],
+                rating: 0,
+                enrolled: false,
+                isLocked: false,
+                lessonsCount: 0,
+                studentCount: 0,
+                duration: courseData.duration
+            };
+
+            addCourse(course);
+            setIsModalOpen(false);
+            setNewCourse({
+                title: '',
+                category: 'Développement Web',
+                description: '',
+                thumbnail: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=800',
+                lessons: [],
+                quizzes: []
+            });
+        } catch (error) {
+            console.error("Failed to create course", error);
+            alert("Erreur lors de la création du cours. Veuillez réessayer.");
+        }
+    };
+
+    const handleDeleteCourse = async (id: string) => {
+        if (!confirm("Êtes-vous sûr de vouloir supprimer ce cours ?")) return;
+        try {
+            await coursesAPI.deleteCourse(id);
+            deleteCourse(id); // Update context state
+        } catch (error) {
+            console.error("Failed to delete course", error);
+            alert("Impossible de supprimer le cours.");
+        }
     };
 
     return (
@@ -104,7 +136,7 @@ export const CourseManagement = () => {
                                             <Eye size={14} /> Aperçu
                                         </button>
                                         <button
-                                            onClick={() => deleteCourse(course.id)}
+                                            onClick={() => handleDeleteCourse(course.id)}
                                             className="px-4 py-2 bg-destructive/10 text-destructive text-xs font-bold rounded-xl hover:bg-destructive hover:text-white transition-all flex items-center gap-2"
                                         >
                                             <Trash2 size={14} /> Supprimer
@@ -116,7 +148,7 @@ export const CourseManagement = () => {
                                     <div className="pb-3 flex items-center justify-between">
                                         <div className="text-sm font-bold flex items-center gap-2">
                                             <FileVideo size={16} className="text-slate-500" />
-                                            {course.lessons.length} Leçons publiées
+                                            {course.lessons?.length || 0} Leçons publiées
                                         </div>
                                         <button className="text-[10px] font-bold uppercase tracking-widest text-brand-400 hover:underline">
                                             Gérer le contenu

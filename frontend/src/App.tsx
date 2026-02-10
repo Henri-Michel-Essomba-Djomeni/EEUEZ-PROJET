@@ -6,6 +6,7 @@ import { Layout } from './components/Layout'
 import { Chatbot } from './components/Chatbot'
 import { CourseViewer } from './components/CourseViewer'
 import { TeacherManagement } from './components/TeacherManagement'
+import { StudentManagement } from './components/StudentManagement'
 import { CourseManagement } from './components/CourseManagement'
 import { StudentDashboard } from './components/StudentDashboard'
 import { AdminDashboard } from './components/AdminDashboard'
@@ -76,6 +77,11 @@ const ProtectedRoutes = () => {
                 } />
 
                 {/* Admin-only routes */}
+                <Route path="/student-management" element={
+                    <RoleProtectedRoute allowedRoles={['ADMIN']}>
+                        <StudentManagement />
+                    </RoleProtectedRoute>
+                } />
                 <Route path="/teacher-management" element={
                     <RoleProtectedRoute allowedRoles={['ADMIN']}>
                         <TeacherManagement />
@@ -84,7 +90,7 @@ const ProtectedRoutes = () => {
 
                 {/* Teacher-only routes */}
                 <Route path="/course-management" element={
-                    <RoleProtectedRoute allowedRoles={['TEACHER']}>
+                    <RoleProtectedRoute allowedRoles={['TEACHER', 'ADMIN']}>
                         <CourseManagement />
                     </RoleProtectedRoute>
                 } />

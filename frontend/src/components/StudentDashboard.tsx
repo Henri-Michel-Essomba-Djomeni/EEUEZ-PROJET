@@ -2,8 +2,8 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { useAuth } from '../context/AuthContext';
 import { useData } from '../context/DataContext';
+import { Search, Play, Lock, Clock, FileText, Users, GraduationCap as GradCapIcon } from 'lucide-react';
 import { Course } from '../data/mockData';
-import { Search, Play, Lock, Clock, FileText, Users } from 'lucide-react';
 
 interface StudentDashboardProps {
     onSelectCourse: (course: Course) => void;
@@ -50,7 +50,6 @@ export const StudentDashboard = ({ onSelectCourse }: StudentDashboardProps) => {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="flex flex-col gap-1">
                     <h2 className="text-3xl font-bold text-slate-900">
-                        Bonjour, {user?.name.split(' ')[0]} <span className="text-brand-500">👋</span>
                     </h2>
                     <p className="text-slate-500">Prêt à apprendre quelque chose de nouveau aujourd'hui ?</p>
                 </div>
