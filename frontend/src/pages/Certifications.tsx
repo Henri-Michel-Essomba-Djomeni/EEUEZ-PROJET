@@ -1,6 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Award, Download, Share2, Trophy, Star } from 'lucide-react';
+import { Award, Download, Share2, Trophy, Star, Loader2 } from 'lucide-react';
+import { certificationsAPI } from '../services/api';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
 
 interface Certificate {
     id: string;
@@ -8,90 +13,123 @@ interface Certificate {
     issueDate: string;
     instructor: string;
     score: number;
+    certificateCode?: string;
 }
 
-const MOCK_CERTIFICATES: Certificate[] = [
-    { id: '1', courseTitle: 'React Avancé', issueDate: '2024-02-05', instructor: 'Prof. Jean Dupont', score: 90 },
-    { id: '2', courseTitle: 'TypeScript Mastery', issueDate: '2024-02-03', instructor: 'Marie Lopez', score: 85 },
-];
-
 export const Certifications = () => {
+    const [certificates, setCertificates] = useState<Certificate[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchCerts = async () => {
+            try {
+                const data = await certificationsAPI.getMyCertifications();
+                setCertificates(data);
+            } catch (error) {
+                console.error("Failed to fetch certifications", error);
+                toast.error("Impossible de charger les certifications.");
+            } finally {
+                setIsLoading(false);
+            }
+        };
+        fetchCerts();
+    }, []);
+
     return (
-        <div className="space-y-8">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div className="space-y-1">
-                    <h2 className="text-3xl font-bold uppercase italic tracking-tighter leading-none">
-                        Mes <span className="text-brand-400">Certifications</span>
-                    </h2>
-                    <p className="text-muted-foreground">Vos accomplissements et certificats obtenus.</p>
-                </div>
+        <div className="container mx-auto py-6 px-4 max-w-6xl">
+            <div className="flex flex-col gap-1 mb-6">
+                <h1 className="text-xl font-bold text-slate-900 tracking-tight flex items-center gap-2 italic">
+                    <Trophy className="text-brand-600" size={24} />
+                    Mes <span className="text-brand-600">Certifications</span>
+                </h1>
+                <p className="text-muted-foreground text-sm">Vos accomplissements officiels.</p>
             </div>
 
-            {MOCK_CERTIFICATES.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {MOCK_CERTIFICATES.map((cert, i) => (
+            {isLoading ? (
+                <div className="flex flex-col items-center justify-center py-12 gap-2">
+                    <Loader2 className="animate-spin text-brand-600" size={32} />
+                    <p className="text-xs text-muted-foreground">Recherche de vos diplômes...</p>
+                </div>
+            ) : certificates.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                    {certificates.map((cert, i) => (
                         <motion.div
                             key={cert.id}
-                            initial={{ opacity: 0, scale: 0.95 }}
-                            animate={{ opacity: 1, scale: 1 }}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: i * 0.1 }}
-                            className="glass-panel p-8 rounded-3xl space-y-6 border-border/50 hover:border-brand-500/30 transition-all group relative overflow-hidden"
                         >
-                            {/* Decorative gradient */}
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-brand-500/10 rounded-full blur-3xl group-hover:bg-brand-500/20 transition-all" />
+                            <Card className="group border-slate-200 rounded-xl overflow-hidden hover:shadow-lg transition-all duration-500 bg-white relative">
+                                <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:scale-110 transition-transform">
+                                    <Award size={60} />
+                                </div>
 
-                            <div className="relative z-10 space-y-6">
-                                <div className="flex items-start justify-between">
-                                    <div className="w-16 h-16 rounded-2xl premium-gradient flex items-center justify-center text-white">
-                                        <Trophy size={32} />
+                                <CardContent className="p-4 space-y-4 relative z-10">
+                                    <div className="flex items-start justify-between">
+                                        <div className="w-10 h-10 rounded-lg bg-brand-600 flex items-center justify-center text-white shadow-md shadow-brand-500/20">
+                                            <Trophy size={18} />
+                                        </div>
+                                        <div className="flex items-center gap-0.5 text-yellow-500">
+                                            {[...Array(5)].map((_, i) => (
+                                                <Star key={i} size={10} fill="currentColor" />
+                                            ))}
+                                        </div>
                                     </div>
-                                    <div className="flex items-center gap-1 text-amber-500">
-                                        {[...Array(5)].map((_, i) => (
-                                            <Star key={i} size={16} fill="currentColor" />
-                                        ))}
+
+                                    <div className="space-y-1">
+                                        <h3 className="text-sm font-bold text-slate-900 leading-tight uppercase italic tracking-tighter group-hover:text-brand-600 transition-colors line-clamp-2">
+                                            {cert.courseTitle}
+                                        </h3>
+                                        <div className="flex flex-col gap-0.5">
+                                            <p className="text-sm font-medium text-slate-500">
+                                                Délivré le {new Date(cert.issueDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                            </p>
+                                            <Badge variant="outline" className="w-fit text-xs font-bold uppercase  border-slate-100 bg-slate-50 text-slate-400 py-0 px-1">
+                                                ID: {cert.certificateCode || cert.id.substring(0, 8)}
+                                            </Badge>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div className="space-y-2">
-                                    <h3 className="text-2xl font-bold uppercase italic tracking-tighter">{cert.courseTitle}</h3>
-                                    <p className="text-sm text-muted-foreground">
-                                        Délivré le {new Date(cert.issueDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
-                                    </p>
-                                    <p className="text-xs text-muted-foreground uppercase tracking-widest font-bold">
-                                        Par {cert.instructor}
-                                    </p>
-                                </div>
-
-                                <div className="flex items-center gap-2 pt-4 border-t border-border/50">
-                                    <div className="flex-1 text-center p-3 rounded-xl bg-secondary">
-                                        <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Score Final</div>
-                                        <div className="text-2xl font-black text-brand-500">{cert.score}%</div>
+                                    <div className="grid grid-cols-2 gap-1 py-3 border-y border-slate-50">
+                                        <div>
+                                            <p className="text-xs font-bold text-slate-400 uppercase tracking-[0.1em] mb-0">Instructeur</p>
+                                            <p className="font-bold text-slate-900 text-sm truncate">{cert.instructor}</p>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="text-xs font-bold text-slate-400 uppercase tracking-[0.1em] mb-0">Score</p>
+                                            <p className="text-sm font-bold text-emerald-600">{cert.score}%</p>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div className="flex gap-2">
-                                    <button className="flex-1 px-4 py-3 bg-brand-500 hover:bg-brand-600 text-white rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all">
-                                        <Download size={16} /> Télécharger
-                                    </button>
-                                    <button className="px-4 py-3 bg-secondary hover:bg-muted text-foreground rounded-xl text-sm font-bold flex items-center justify-center gap-2 transition-all">
-                                        <Share2 size={16} />
-                                    </button>
-                                </div>
-                            </div>
+                                    <div className="flex gap-2 pt-1">
+                                        <button className="flex-1 h-8 bg-brand-600 hover:bg-brand-700 text-white rounded-lg font-bold uppercase  text-xs shadow-sm transition-all hover:scale-[1.02] flex items-center justify-center gap-1">
+                                            <Download className="h-3 w-3" /> Télécharger
+                                        </button>
+                                        <button className="w-8 h-8 rounded-lg border border-slate-200 text-slate-400 hover:text-brand-600 hover:border-brand-500 transition-all flex items-center justify-center">
+                                            <Share2 size={14} />
+                                        </button>
+                                    </div>
+                                </CardContent>
+                            </Card>
                         </motion.div>
                     ))}
                 </div>
             ) : (
-                <div className="p-12 glass-panel rounded-3xl border-border/50 border-dashed text-center space-y-4">
-                    <div className="inline-flex p-4 rounded-full bg-secondary text-muted-foreground">
-                        <Award size={32} />
+                <div className="text-center py-12 bg-slate-50 rounded-xl border border-dashed border-slate-200">
+                    <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto mb-4 text-slate-300 shadow-sm border border-slate-100">
+                        <Award size={24} />
                     </div>
-                    <div className="space-y-2">
-                        <h3 className="text-xl font-bold uppercase italic tracking-tighter">Aucune certification</h3>
-                        <p className="text-muted-foreground text-sm max-w-md mx-auto">
-                            Complétez vos cours et réussissez les évaluations pour obtenir vos premières certifications !
-                        </p>
-                    </div>
+                    <h3 className="text-sm font-bold text-slate-900 uppercase italic tracking-tighter">Aucune certification</h3>
+                    <p className="text-slate-500 max-w-xs mx-auto mt-2 text-xs leading-relaxed font-medium">
+                        Complétez vos cours et réussissez les évaluations pour obtenir vos diplômes.
+                    </p>
+                    <Button
+                        variant="ghost"
+                        onClick={() => window.location.href = '/dashboard'}
+                        className="mt-6 text-brand-600 font-bold uppercase  hover:bg-white h-10 text-xs"
+                    >
+                        Parcourir les cours
+                    </Button>
                 </div>
             )}
         </div>

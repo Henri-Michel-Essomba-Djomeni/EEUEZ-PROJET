@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>EEUEZ-Assist - Connexion</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="login-body">
+
+  <div class="login-card">
+    <div class="logo">💬</div>
+    <h2>EEUEZ-Assist</h2>
+    <p>Connectez-vous pour accéder à votre assistant IA</p>
+
+    <!-- Formulaire classique (désactivé pour OAuth) -->
+    <input type="email" placeholder="Adresse email" id="emailInput" disabled style="opacity: 0.5;">
+    <input type="password" placeholder="Mot de passe" id="passwordInput" disabled style="opacity: 0.5;">
+
+    <div class="options">
+      <label><input type="checkbox" disabled> Se souvenir de moi</label>
+      <a href="#" style="opacity: 0.5; pointer-events: none;">Mot de passe oublié ?</a>
+    </div>
+
+    <button onclick="loginClassic()" disabled style="opacity: 0.5; cursor: not-allowed;">
+      Se connecter (Bientôt disponible)
+    </button>
+
+    <div class="divider">CONTINUER AVEC</div>
+
+    <!-- Bouton Google OAuth (actif) -->
+    <button class="google-btn" onclick="loginWithGoogle()">
+      <img src="https://www.google.com/favicon.ico" alt="Google" style="width: 16px; vertical-align: middle; margin-right: 8px;">
+      Continuer avec Google
+    </button>
+
+    <p class="signup">Pas encore de compte ? <a href="#" style="opacity: 0.5; pointer-events: none;">Créer un compte</a></p>
+
+    <!-- Message d'information -->
+    <div style="margin-top: 20px; padding: 10px; background: rgba(240, 180, 76, 0.2); border-radius: 8px; font-size: 12px;">
+      ℹ️ Pour l'instant, seule la connexion Google est disponible
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

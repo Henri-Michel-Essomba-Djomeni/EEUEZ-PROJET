@@ -1,0 +1,34 @@
+╔════════════════════════════════════════════════════════════════════╗
+║         CONFIGURATION EEUEZ - LECTURE AUTOMATIQUE DU SITE          ║
+╚════════════════════════════════════════════════════════════════════╝
+
+📝 INSTRUCTIONS :
+Le chatbot va automatiquement lire le contenu du site EEUEZ pour 
+répondre aux questions.
+
+════════════════════════════════════════════════════════════════════
+
+🌐 URL DU SITE EEUEZ :
+https://www.eeuez.com
+
+════════════════════════════════════════════════════════════════════
+
+📋 INFORMATIONS COMPLÉMENTAIRES (Optionnel) :
+
+Si vous voulez ajouter des informations supplémentaires qui ne sont 
+pas sur le site, écrivez-les ici :
+
+[Vous pouvez ajouter des infos complémentaires ici si besoin]
+
+
+════════════════════════════════════════════════════════════════════
+
+💡 COMMENT ÇA MARCHE :
+
+1. Au démarrage du serveur, l'IA lit automatiquement www.eeuez.com
+2. Elle extrait le contenu des pages principales
+3. Elle utilise ce contenu pour répondre aux questions
+4. Les réponses sont basées sur le VRAI contenu du site
+
+🔄 MISE À JOUR :
+Pour rafraîchir le contenu, redémarrez simplement le serveur !

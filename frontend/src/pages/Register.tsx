@@ -1,15 +1,60 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { GraduationCap, Mail, Lock, User, CheckCircle } from 'lucide-react';
+import { GraduationCap, Mail, Lock, User as UserIcon, CheckCircle } from 'lucide-react';
+import { authAPI, storage } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 
 export const Register = ({ onRegister, onSwitch }: { onRegister: () => void, onSwitch: () => void }) => {
     const navigate = useNavigate();
+    const { login } = useAuth(); // Use login to hydrate context after registration if needed
 
-    const handleRegister = (e: React.FormEvent) => {
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleRegister = async (e: React.FormEvent) => {
         e.preventDefault();
-        onRegister();
-        navigate('/dashboard');
+        setError('');
+        setIsLoading(true);
+
+        try {
+            // Split name into first and last name for API
+            const nameParts = name.trim().split(' ');
+            const firstName = nameParts[0];
+            const lastName = nameParts.slice(1).join(' ') || '';
+
+            const response = await authAPI.register({
+                email,
+                password,
+                firstName,
+                lastName,
+                role: 'STUDENT'
+            });
+
+            // Auto login after register
+            storage.setToken(response.token);
+            // We can manually hydrate state or just redirect which triggers initAuth in AuthProvider?
+            // Better to force strict reload or use login method if it supported token?
+            // Ideally authAPI.register returns token, we store it.
+            // Then we can call a method in AuthContext to "refresh" user from token.
+            // For now, let's just navigate to login or dashboard. 
+            // Since AuthProvider checks token on mount, a full page reload would work, or we can use the login() from context if we adjust it.
+            // Adjusted login() in previous step took email/password. 
+            // Let's just manually set token and reload window to be safe and simple for now, or just redirect to login page.
+            // Actually, AuthProvider initAuth runs on mount. 
+            // Let's try to just navigate to /dashboard. The AuthProvider might not re-run initAuth unless we trigger it.
+            // Let's just reload for simplicity to ensure AuthContext picks up the new token.
+            window.location.href = '/dashboard';
+
+        } catch (err: any) {
+            console.error("Registration failed", err);
+            setError(err.message || "Une erreur est survenue lors de l'inscription.");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -27,6 +72,12 @@ export const Register = ({ onRegister, onSwitch }: { onRegister: () => void, onS
                         <h1 className="text-3xl font-bold mb-2 text-slate-900">Créer un compte</h1>
                         <p className="text-slate-500">Rejoignez notre communauté d'apprenants.</p>
                     </div>
+
+                    {error && (
+                        <div className="p-4 bg-red-50 text-red-600 rounded-lg text-sm">
+                            {error}
+                        </div>
+                    )}
 
                     <form className="space-y-5" onSubmit={handleRegister}>
                         <button
@@ -50,12 +101,14 @@ export const Register = ({ onRegister, onSwitch }: { onRegister: () => void, onS
                             <div>
                                 <label className="block text-sm font-medium text-slate-700 mb-1">Nom complet</label>
                                 <div className="relative">
-                                    <User className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
+                                    <UserIcon className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
                                     <input
                                         type="text"
                                         placeholder="John Doe"
                                         className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all text-sm"
                                         required
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
                                     />
                                 </div>
                             </div>
@@ -69,6 +122,8 @@ export const Register = ({ onRegister, onSwitch }: { onRegister: () => void, onS
                                         placeholder="votre@email.com"
                                         className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all text-sm"
                                         required
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
                                     />
                                 </div>
                             </div>
@@ -82,6 +137,8 @@ export const Register = ({ onRegister, onSwitch }: { onRegister: () => void, onS
                                         placeholder="••••••••"
                                         className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all text-sm"
                                         required
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
                                     />
                                 </div>
                             </div>
@@ -89,9 +146,10 @@ export const Register = ({ onRegister, onSwitch }: { onRegister: () => void, onS
 
                         <button
                             type="submit"
-                            className="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-brand-500/30 flex items-center justify-center gap-2"
+                            disabled={isLoading}
+                            className="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-brand-500/30 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            Créer mon compte
+                            {isLoading ? 'Inscription...' : 'Créer mon compte'}
                         </button>
                     </form>
 

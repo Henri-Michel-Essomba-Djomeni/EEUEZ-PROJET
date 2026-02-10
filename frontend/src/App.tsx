@@ -6,6 +6,7 @@ import { Layout } from './components/Layout'
 import { Chatbot } from './components/Chatbot'
 import { CourseViewer } from './components/CourseViewer'
 import { TeacherManagement } from './components/TeacherManagement'
+import { StudentManagement } from './components/StudentManagement'
 import { CourseManagement } from './components/CourseManagement'
 import { StudentDashboard } from './components/StudentDashboard'
 import { AdminDashboard } from './components/AdminDashboard'
@@ -16,8 +17,9 @@ import { Profile } from './pages/Profile'
 import { Evaluations } from './pages/Evaluations'
 import { LandingPage } from './pages/LandingPage'
 import { Certifications } from './pages/Certifications'
+import { CourseDetail } from './pages/CourseDetail'
 import { useState } from 'react'
-import { Course } from './data/mockData'
+import { Course } from './types'
 
 // Role-based route protection
 const RoleProtectedRoute = ({
@@ -76,6 +78,11 @@ const ProtectedRoutes = () => {
                 } />
 
                 {/* Admin-only routes */}
+                <Route path="/student-management" element={
+                    <RoleProtectedRoute allowedRoles={['ADMIN']}>
+                        <StudentManagement />
+                    </RoleProtectedRoute>
+                } />
                 <Route path="/teacher-management" element={
                     <RoleProtectedRoute allowedRoles={['ADMIN']}>
                         <TeacherManagement />
@@ -84,8 +91,13 @@ const ProtectedRoutes = () => {
 
                 {/* Teacher-only routes */}
                 <Route path="/course-management" element={
-                    <RoleProtectedRoute allowedRoles={['TEACHER']}>
+                    <RoleProtectedRoute allowedRoles={['TEACHER', 'ADMIN']}>
                         <CourseManagement />
+                    </RoleProtectedRoute>
+                } />
+                <Route path="/course/:courseId" element={
+                    <RoleProtectedRoute allowedRoles={['TEACHER', 'ADMIN']}>
+                        <CourseDetail />
                     </RoleProtectedRoute>
                 } />
 

@@ -1,15 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import { motion } from 'framer-motion';
 import { GraduationCap, Mail, Lock, ArrowRight, CheckCircle } from 'lucide-react';
 
 export const Login = ({ onLogin, onSwitch }: { onLogin: () => void, onSwitch: () => void }) => {
     const navigate = useNavigate();
+    const { login } = useAuth();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
-    const handleLogin = (e: React.FormEvent) => {
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
-        onLogin();
-        navigate('/dashboard');
+        setError('');
+        setIsLoading(true);
+        try {
+            await login(email, password);
+            navigate('/dashboard');
+        } catch (err) {
+            setError('Email ou mot de passe incorrect.');
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -27,6 +41,12 @@ export const Login = ({ onLogin, onSwitch }: { onLogin: () => void, onSwitch: ()
                         <h1 className="text-3xl font-bold mb-2 text-slate-900">Bon retour !</h1>
                         <p className="text-slate-500">Entrez vos accès pour continuer l'aventure.</p>
                     </div>
+
+                    {error && (
+                        <div className="p-4 bg-red-50 text-red-600 rounded-lg text-sm">
+                            {error}
+                        </div>
+                    )}
 
                     <form className="space-y-6" onSubmit={handleLogin}>
                         <button
@@ -56,6 +76,8 @@ export const Login = ({ onLogin, onSwitch }: { onLogin: () => void, onSwitch: ()
                                         placeholder="votre@email.com"
                                         className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all text-sm"
                                         required
+                                        value={email}
+                                        onChange={(e) => setEmail(e.target.value)}
                                     />
                                 </div>
                             </div>
@@ -69,6 +91,8 @@ export const Login = ({ onLogin, onSwitch }: { onLogin: () => void, onSwitch: ()
                                         placeholder="••••••••"
                                         className="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all text-sm"
                                         required
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
                                     />
                                 </div>
                             </div>
@@ -86,9 +110,10 @@ export const Login = ({ onLogin, onSwitch }: { onLogin: () => void, onSwitch: ()
 
                         <button
                             type="submit"
-                            className="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-brand-500/30 flex items-center justify-center gap-2"
+                            disabled={isLoading}
+                            className="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-brand-500/30 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            Se connecter
+                            {isLoading ? 'Connexion...' : 'Se connecter'}
                         </button>
                     </form>
 

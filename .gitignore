@@ -1,24 +1,32 @@
-*.log
-.DS_Store
+# Variables d'environnement (CLÉ API, CREDENTIALS)
 .env
-.env.backup
+.env.local
 .env.production
-.phpactor.json
-.phpunit.result.cache
-/.fleet
-/.idea
-/.nova
-/.phpunit.cache
-/.vscode
-/.zed
-/auth.json
-/node_modules
-/public/build
-/public/hot
-/public/storage
-/storage/*.key
-/storage/pail
-/vendor
-Homestead.json
-Homestead.yaml
+
+# Dépendances Node.js
+node_modules/
+package-lock.json
+
+# Base de données locale
+*.db
+*.sqlite
+
+# Fichiers système
+.DS_Store
 Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+npm-debug.log*
+logs/
+
+# Éditeurs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build
+dist/
+build/

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>EEUEZ-Assist - Chat</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="chat-body">
+
+  <div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <!-- Profil utilisateur -->
+      <div class="user-profile" id="userProfile">
+        <div class="user-avatar" id="userAvatar">👤</div>
+        <div class="user-info">
+          <div class="user-name" id="userName">Chargement...</div>
+          <div class="user-email" id="userEmail"></div>
+        </div>
+      </div>
+
+      <h3>EEUEZ-Assist</h3>
+      <button class="new-chat" onclick="newConversation()">+ Nouvelle conversation</button>
+
+      <!-- Historique des conversations -->
+      <div class="history">
+        <h4>Historique récent</h4>
+        <div id="historyList">
+          <p style="font-size: 12px; opacity: 0.7;">Chargement...</p>
+        </div>
+      </div>
+
+      <div class="settings" onclick="logout()">🚪 Déconnexion</div>
+    </aside>
+
+    <!-- CHAT -->
+    <main class="chat">
+      <div class="chat-header">
+        <span>Bienvenue sur votre Assistant EEUEZ</span>
+        <button class="header-btn" onclick="clearHistory()" title="Effacer l'historique">
+          🗑️ Effacer l'historique
+        </button>
+      </div>
+
+      <div class="messages" id="messages">
+        <div class="bot">
+          👋 Salut, je suis EEUEZ-Assist, je suis là pour vous assister sur la plateforme EEUEZ ! Posez n'importe quelle question concernant les services de la plateforme.
+        </div>
+      </div>
+
+      <div class="input-area">
+        <input id="userInput" placeholder="Posez votre question…">
+        <button onclick="sendMessage()" id="sendBtn">➤</button>
+      </div>
+    </main>
+
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    // Vérifier l'authentification au chargement
+    window.addEventListener('DOMContentLoaded', () => {
+      checkAuth();
+      loadHistory();
+    });
+  </script>
+</body>
+</html>
