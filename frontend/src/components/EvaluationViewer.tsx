@@ -137,9 +137,8 @@ export const EvaluationViewer: React.FC<EvaluationViewerProps> = ({ quizId, onCo
             <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="max-w-2xl mx-auto"
             >
-                <div className="glass-panel p-8 rounded-3xl border border-border text-center">
+                <div className="p-6 rounded-2xl border border-border text-center bg-slate-50/50">
                     <motion.div
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
@@ -163,17 +162,17 @@ export const EvaluationViewer: React.FC<EvaluationViewerProps> = ({ quizId, onCo
 
                     <div className="grid grid-cols-3 gap-4 mb-6">
                         <div className="p-4 bg-secondary rounded-2xl">
-                            <div className="text-xs text-muted-foreground uppercase font-bold tracking-widest mb-1">Score</div>
+                            <div className="text-xs text-muted-foreground uppercase font-bold  mb-1">Score</div>
                             <div className="text-2xl font-bold">{result.score}/{result.max_score}</div>
                         </div>
                         <div className="p-4 bg-secondary rounded-2xl">
-                            <div className="text-xs text-muted-foreground uppercase font-bold tracking-widest mb-1">Pourcentage</div>
+                            <div className="text-xs text-muted-foreground uppercase font-bold  mb-1">Pourcentage</div>
                             <div className={`text-2xl font-bold ${passed ? 'text-green-500' : 'text-red-500'}`}>
                                 {percentage}%
                             </div>
                         </div>
                         <div className="p-4 bg-secondary rounded-2xl">
-                            <div className="text-xs text-muted-foreground uppercase font-bold tracking-widest mb-1">Requis</div>
+                            <div className="text-xs text-muted-foreground uppercase font-bold  mb-1">Requis</div>
                             <div className="text-2xl font-bold">{result.passing_score}%</div>
                         </div>
                     </div>
@@ -195,33 +194,33 @@ export const EvaluationViewer: React.FC<EvaluationViewerProps> = ({ quizId, onCo
     const progress = ((currentQuestionIndex + 1) / quiz.questions.length) * 100;
 
     return (
-        <div className="max-w-3xl mx-auto space-y-6">
+        <div className="space-y-4">
             {/* Header */}
-            <div className="glass-panel p-6 rounded-2xl border border-border">
-                <div className="flex items-center justify-between mb-4">
+            <div className="p-4 rounded-xl border border-border bg-slate-50/50">
+                <div className="flex items-center justify-between mb-3">
                     <div>
-                        <h2 className="text-2xl font-bold">{quiz.title}</h2>
-                        <p className="text-sm text-muted-foreground">{quiz.description}</p>
+                        <h2 className="text-lg font-bold uppercase  tracking-tighter leading-none">{quiz.title}</h2>
+                        <p className="text-xs text-muted-foreground  mt-1">{quiz.description}</p>
                     </div>
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                        <Clock size={16} />
-                        <span className="text-sm font-medium">{quiz.duration_minutes} min</span>
+                    <div className="flex items-center gap-2 text-slate-400 ">
+                        <Clock size={14} />
+                        <span className="text-sm font-bold uppercase ">{quiz.duration_minutes} min</span>
                     </div>
                 </div>
 
                 {/* Progress Bar */}
-                <div className="relative h-2 bg-secondary rounded-full overflow-hidden">
+                <div className="relative h-1.5 bg-slate-100 rounded-full overflow-hidden">
                     <motion.div
                         initial={{ width: 0 }}
                         animate={{ width: `${progress}%` }}
-                        className="absolute inset-y-0 left-0 bg-brand-500"
+                        className="absolute inset-y-0 left-0 bg-brand-600"
                     />
                 </div>
-                <div className="flex items-center justify-between mt-2">
-                    <span className="text-xs text-muted-foreground">
-                        Question {currentQuestionIndex + 1} sur {quiz.questions.length}
+                <div className="flex items-center justify-between mt-1.5">
+                    <span className="text-sm text-slate-400 font-bold uppercase  ">
+                        Question {currentQuestionIndex + 1} / {quiz.questions.length}
                     </span>
-                    <span className="text-xs font-bold text-brand-500">
+                    <span className="text-sm font-bold text-brand-600 uppercase  ">
                         {Math.round(progress)}%
                     </span>
                 </div>
@@ -231,47 +230,51 @@ export const EvaluationViewer: React.FC<EvaluationViewerProps> = ({ quizId, onCo
             <AnimatePresence mode="wait">
                 <motion.div
                     key={currentQuestionIndex}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: -20 }}
-                    className="glass-panel p-8 rounded-2xl border border-border"
+                    initial={{ opacity: 0, scale: 0.98 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.98 }}
+                    className="p-6 rounded-xl border border-border bg-white"
                 >
-                    <div className="flex items-start gap-3 mb-6">
-                        <span className="flex-shrink-0 w-8 h-8 bg-brand-500 text-white rounded-full flex items-center justify-center font-bold text-sm">
+                    <div className="flex items-start gap-3 mb-5">
+                        <span className="flex-shrink-0 w-7 h-7 bg-brand-600 text-white rounded-lg flex items-center justify-center font-bold text-xs ">
                             {currentQuestionIndex + 1}
                         </span>
                         <div className="flex-1">
-                            <p className="text-lg font-medium mb-1">{currentQuestion.question_text}</p>
-                            <p className="text-xs text-muted-foreground">{currentQuestion.points} point(s)</p>
+                            <p className="text-base font-bold  uppercase tracking-tight text-slate-900 leading-tight">{currentQuestion.question_text}</p>
+                            <p className="text-sm text-slate-400 font-bold uppercase   mt-1">{currentQuestion.points} point(s)</p>
                         </div>
                     </div>
 
-                    <div className="space-y-3">
+                    <div className="space-y-2.5">
                         {currentQuestion.question_type === 'short_answer' ? (
                             <textarea
                                 value={answers[currentQuestion.id] || ''}
                                 onChange={e => handleAnswer(currentQuestion.id, e.target.value)}
-                                className="w-full px-4 py-3 rounded-xl bg-secondary border border-border focus:ring-2 focus:ring-brand-500 outline-none min-h-[120px]"
+                                className="w-full px-4 py-3 rounded-xl bg-slate-50 border border-slate-200 focus:ring-2 focus:ring-brand-500 outline-none min-h-[100px] text-sm "
                                 placeholder="Votre réponse..."
                             />
                         ) : (
                             currentQuestion.options?.map((option) => (
                                 <label
                                     key={option.id}
-                                    className={`flex items-center gap-3 p-4 rounded-xl border-2 cursor-pointer transition-all ${answers[currentQuestion.id] === option.id
-                                            ? 'border-brand-500 bg-brand-500/10'
-                                            : 'border-border bg-secondary hover:border-brand-500/50'
+                                    className={`flex items-center gap-3 p-3.5 rounded-xl border transition-all cursor-pointer ${answers[currentQuestion.id] === option.id
+                                        ? 'border-brand-600 bg-brand-50 shadow-sm'
+                                        : 'border-slate-100 bg-slate-50/50 hover:border-brand-300'
                                         }`}
                                 >
+                                    <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center shrink-0 ${answers[currentQuestion.id] === option.id ? 'border-brand-600' : 'border-slate-300'
+                                        }`}>
+                                        {answers[currentQuestion.id] === option.id && <div className="w-2 h-2 rounded-full bg-brand-600" />}
+                                    </div>
+                                    <span className="flex-1 text-sm font-bold text-slate-700 ">{option.option_text}</span>
                                     <input
                                         type="radio"
                                         name={`question-${currentQuestion.id}`}
                                         value={option.id}
                                         checked={answers[currentQuestion.id] === option.id}
                                         onChange={() => handleAnswer(currentQuestion.id, option.id)}
-                                        className="w-5 h-5 text-brand-500"
+                                        className="sr-only"
                                     />
-                                    <span className="flex-1 font-medium">{option.option_text}</span>
                                 </label>
                             ))
                         )}
@@ -284,44 +287,44 @@ export const EvaluationViewer: React.FC<EvaluationViewerProps> = ({ quizId, onCo
                 <button
                     onClick={previousQuestion}
                     disabled={currentQuestionIndex === 0}
-                    className="px-6 py-3 bg-secondary hover:bg-muted rounded-xl font-bold flex items-center gap-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="h-10 px-4 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-sm font-bold uppercase  flex items-center gap-2 transition-all disabled:opacity-50 "
                 >
-                    <ArrowLeft size={18} />
+                    <ArrowLeft size={14} />
                     Précédent
                 </button>
 
                 {currentQuestionIndex === quiz.questions.length - 1 ? (
                     <button
                         onClick={handleSubmit}
-                        className="px-6 py-3 bg-brand-500 hover:bg-brand-600 text-white rounded-xl font-bold flex items-center gap-2 transition-all shadow-lg shadow-brand-500/20"
+                        className="h-10 px-6 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-bold uppercase  flex items-center gap-2 transition-all shadow-md shadow-brand-500/20 "
                     >
                         Soumettre le quiz
-                        <CheckCircle2 size={18} />
+                        <CheckCircle2 size={14} />
                     </button>
                 ) : (
                     <button
                         onClick={nextQuestion}
-                        className="px-6 py-3 bg-brand-500 hover:bg-brand-600 text-white rounded-xl font-bold flex items-center gap-2 transition-all shadow-lg shadow-brand-500/20"
+                        className="h-10 px-6 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-sm font-bold uppercase  flex items-center gap-2 transition-all shadow-md shadow-brand-500/20 "
                     >
                         Suivant
-                        <ArrowRight size={18} />
+                        <ArrowRight size={14} />
                     </button>
                 )}
             </div>
 
             {/* Answer Summary */}
-            <div className="glass-panel p-4 rounded-2xl border border-border">
-                <p className="text-xs text-muted-foreground uppercase font-bold tracking-widest mb-3">Progression</p>
+            <div className="p-4 rounded-xl border border-border bg-slate-50/50">
+                <p className="text-sm font-bold text-slate-400 uppercase  mb-3 ">Navigation rapide</p>
                 <div className="flex flex-wrap gap-2">
                     {quiz.questions.map((q, idx) => (
                         <button
                             key={q.id}
                             onClick={() => setCurrentQuestionIndex(idx)}
-                            className={`w-10 h-10 rounded-lg font-bold text-sm transition-all ${answers[q.id]
-                                    ? 'bg-brand-500 text-white'
-                                    : idx === currentQuestionIndex
-                                        ? 'bg-secondary border-2 border-brand-500'
-                                        : 'bg-secondary hover:bg-muted'
+                            className={`w-8 h-8 rounded-lg font-bold text-xs transition-all  ${answers[q.id]
+                                ? 'bg-brand-600 text-white shadow-sm'
+                                : idx === currentQuestionIndex
+                                    ? 'bg-white border-2 border-brand-600 text-brand-600'
+                                    : 'bg-slate-100 hover:bg-slate-200 text-slate-500'
                                 }`}
                         >
                             {idx + 1}

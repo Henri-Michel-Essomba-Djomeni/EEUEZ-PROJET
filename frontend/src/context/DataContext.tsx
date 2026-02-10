@@ -24,29 +24,36 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const refreshData = async () => {
         try {
             const coursesData = await coursesAPI.getAllCourses();
-            // Map backend data to frontend Course interface if necessary
-            // The backend return structure should now match strict types or be adapted here
-            const mappedCourses = coursesData.map((c: any) => ({
-                id: c.id.toString(),
-                title: c.title,
-                description: c.description,
-                category: c.category,
-                level: c.level,
-                thumbnail: c.thumbnail || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800', // Default if missing
-                duration: c.duration || '0h',
-                price: c.price || 0,
-                instructorId: c.instructor_id?.toString(),
-                lessons: c.lessons || [], // Ensure lessons is an array
-                quizzes: c.quizzes || [], // Ensure quizzes is an array
-                lessonsCount: c.lessons?.length || 0,
-                studentCount: c.student_count || 0, // Backend should return this or we mock/fetch
-                is_locked: !!c.is_locked,
-                instructor: c.instructor_name || "Unknown Instructor", // Join in backend
-                rating: c.rating || 0
-            }));
-            setCourses(mappedCourses);
+            console.log("Fetched courses data:", coursesData);
+
+            if (Array.isArray(coursesData)) {
+                // Map backend data to frontend Course interface if necessary
+                const mappedCourses = coursesData.map((c: any) => ({
+                    id: c.id?.toString() || Math.random().toString(),
+                    title: c.title || "Untitled Course",
+                    description: c.description || "",
+                    category: c.category || "General",
+                    level: c.level || "Beginner",
+                    thumbnail: c.thumbnail || 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=800',
+                    duration: c.duration || '0h',
+                    price: c.price || 0,
+                    instructorId: c.instructor_id?.toString(),
+                    lessons: c.lessons || [],
+                    quizzes: c.quizzes || [],
+                    lessonsCount: c.lessons?.length || 0,
+                    studentCount: c.student_count || 0,
+                    is_locked: !!c.is_locked,
+                    instructor: c.instructor_name || "Unknown Instructor",
+                    rating: c.rating || 0
+                }));
+                setCourses(mappedCourses);
+            } else {
+                console.warn("Expected array for courses, but got:", coursesData);
+                setCourses([]);
+            }
         } catch (error) {
             console.error("Failed to fetch courses:", error);
+            setCourses([]);
         }
     };
 

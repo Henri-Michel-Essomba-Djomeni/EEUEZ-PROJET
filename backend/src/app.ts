@@ -16,6 +16,8 @@ import userRoutes from './routes/userRoutes';
 import certificationRoutes from './routes/certificationRoutes';
 import lessonRoutes from './routes/lessonRoutes';
 import evaluationRoutes from './routes/evaluationRoutes';
+import chatRoutes from './routes/chatRoutes';
+import { loadEEUEZContent } from './services/geminiService';
 
 // Middleware
 app.use(cors());
@@ -31,6 +33,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/certifications', certificationRoutes);
 app.use('/api/lessons', lessonRoutes);
 app.use('/api/evaluations', evaluationRoutes);
+app.use('/api/chat', chatRoutes);
 
 // Health Check Route
 app.get('/api/health', async (req: Request, res: Response) => {
@@ -51,6 +54,8 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
     res.status(500).json({ status: 'error', message: 'Internal Server Error' });
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
     console.log(`Server is running on port ${PORT}`);
+    // Initialize EEUEZ Content Scraping
+    await loadEEUEZContent();
 });

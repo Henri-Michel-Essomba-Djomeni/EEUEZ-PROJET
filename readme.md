@@ -1,111 +1,191 @@
-# EEUEZ ACADEMY - Plateforme de Formation en Ligne
+# 🤖 EEUEZ-Assist Chatbot
 
-Bienvenue sur la plateforme EEUEZ Academy, une application web moderne pour la formation en ligne, la gestion de cours et de certifications.
+Assistant virtuel intelligent pour la plateforme EEUEZ, propulsé par Google Gemini AI.
 
-## 🚀 Fonctionnalités Principal
+## 📁 Structure du projet
 
-- **Catalogue de Cours**: Exploration de formations par catégories et niveaux.
-- **Gestionnaire d'Apprentissage**: Tableau de bord pour suivre la progression.
-- **Certification**: Génération automatique de certificats de réussite.
-- **Interface Premium**: Design moderne avec Shadcn UI et Framer Motion.
-- **Administration**: Gestion des utilisateurs et des contenus par les administrateurs et professeurs.
-
-## 🛠 Prérequis
-
-Avant de commencer, assurez-vous d'avoir installé :
-- **Node.js** (v18 ou supérieur)
-- **npm** (v9 ou supérieur)
-- **MySQL** (v8 ou supérieur)
-
-## 📂 Structure du Projet
-
-```text
-EEUEZ-PROJET/
-├── backend/          # Serveur API Node.js/Express
-└── frontend/         # Application React/Vite
 ```
-
-## ⚙️ Installation
-
-### 1. Cloner le projet
-```bash
-git clone https://github.com/Henri-Michel-Essomba-Djomeni/EEUEZ-PROJET.git
-cd EEUEZ-PROJET
+eeuez-chatbot/
+├── frontend/           # Interface utilisateur
+│   ├── index.html     # Page de connexion
+│   ├── chat.html      # Interface du chat
+│   ├── script.js      # Logique frontend
+│   └── style.css      # Styles CSS
+├── backend/           # Serveur Node.js
+│   ├── server.js      # API server
+│   ├── .env           # Variables d'environnement (CLÉ API)
+│   └── package.json   # Configuration Node.js
+└── .gitignore         # Fichiers à ignorer par Git
 ```
-
-### 2. Configuration de la Base de Données
-1. Créez une base de données MySQL nommée `eeuez_academy` (ou le nom de votre choix).
-2. Configurez les variables d'environnement dans `backend/.env`.
-
-### 3. Backend (Serveur)
-```bash
-cd backend
-npm install
-```
-Créez un fichier `.env` dans le dossier `backend/` :
-```env
-PORT=3000
-DB_HOST=localhost
-DB_USER=root
-DB_PASSWORD=votre_mot_de_passe
-DB_NAME=eeuez_academy
-JWT_SECRET=votre_secret_tres_long_et_securise
-```
-
-### 4. Frontend (Client)
-```bash
-cd ../frontend
-npm install
-```
-Créez un fichier `.env` dans le dossier `frontend/` :
-```env
-VITE_API_URL=http://localhost:3000/api
-```
-
-## 🚀 Lancement
-
-### Initialisation de la Base de Données
-Dans le dossier `backend/`, exécutez ces commandes dans l'ordre :
-1. **Migration** (Création des tables) :
-   ```bash
-   npm run migrate
-   ```
-2. **Seeding** (Population des données initiales) :
-   ```bash
-   npm run seed
-   ```
-
-### Démarrage des serveurs
-Ouvrez deux terminaux différents :
-
-**Terminal 1 (Backend) :**
-```bash
-cd backend
-npm run dev
-```
-
-**Terminal 2 (Frontend) :**
-```bash
-cd frontend
-npm run dev
-```
-
-L'application sera accessible sur `http://localhost:5173`.
-
-## 🔑 Identifiants par défaut (après Seeding)
-
-Tous les comptes utilisent le mot de passe : `Password123!`
-
-| Rôle | Email |
-| :--- | :--- |
-| **Admin** | `admin@eeuez.com` |
-| **Professeur** | `jean.teacher@eeuez.com` |
-| **Étudiant** | `alice@student.com` |
-
-## 🧪 Technologies Utilisées
-
-- **Frontend**: React, TypeScript, Vite, Tailwind CSS, Shadcn UI, Framer Motion, Lucide React.
-- **Backend**: Node.js, Express, MySQL, JWT, Bcrypt.
 
 ---
-© 2026 EEUEZ ACADEMY. Tous droits réservés.
+
+## 🚀 Installation
+
+### 1️⃣ Obtenir votre clé API Gemini
+
+1. Allez sur https://aistudio.google.com/app/apikey
+2. Connectez-vous avec votre compte Google
+3. Cliquez sur **"Create API Key"**
+4. Copiez la clé générée (commence par `AIza...`)
+
+### 2️⃣ Configurer le backend
+
+1. Ouvrez le fichier `backend/.env`
+2. Remplacez `VOTRE_CLE_API_ICI` par votre vraie clé API :
+
+```env
+GEMINI_API_KEY=AIzaSy...VotreVraieCleIci
+PORT=3000
+```
+
+⚠️ **IMPORTANT** : Ne partagez JAMAIS votre clé API et ne la commitez pas sur Git !
+
+---
+
+## 🎯 Lancement du projet
+
+### Étape 1 : Démarrer le backend
+
+Ouvrez un terminal dans le dossier `backend/` :
+
+```bash
+cd backend
+node server.js
+```
+
+Vous devriez voir :
+```
+🚀 Serveur EEUEZ-Assist démarré sur http://localhost:3000
+✅ API Gemini configurée
+📡 Endpoints disponibles:
+   - POST http://localhost:3000/api/chat
+   - GET  http://localhost:3000/health
+```
+
+### Étape 2 : Ouvrir le frontend
+
+1. Ouvrez le fichier `frontend/index.html` dans votre navigateur
+2. Cliquez sur **"Se connecter"**
+3. Commencez à discuter avec l'assistant ! 💬
+
+---
+
+## 🧪 Tester que tout fonctionne
+
+### Test 1 : Vérifier le serveur
+
+Dans un navigateur, allez sur : http://localhost:3000/health
+
+Vous devriez voir :
+```json
+{"status":"ok","message":"Serveur EEUEZ-Assist actif"}
+```
+
+### Test 2 : Poser une question
+
+Dans le chat, tapez :
+```
+C'est quoi EEUEZ ?
+```
+
+Le bot devrait répondre avec une réponse générée par Gemini AI !
+
+---
+
+## 🛠️ Fonctionnalités
+
+✅ Interface de connexion moderne  
+✅ Chat en temps réel  
+✅ Intégration Google Gemini AI  
+✅ Sécurisation de la clé API (backend)  
+✅ Gestion des erreurs  
+✅ Indicateur de chargement  
+✅ Envoi de message avec Entrée  
+
+---
+
+## 🐛 Résolution de problèmes
+
+### Erreur : "Impossible de se connecter au serveur"
+
+- Vérifiez que le backend est démarré (`node server.js`)
+- Vérifiez que le port 3000 est libre
+
+### Erreur : "GEMINI_API_KEY non trouvée"
+
+- Ouvrez `backend/.env`
+- Vérifiez que votre clé API est bien écrite
+- Redémarrez le serveur
+
+### Le bot ne répond pas
+
+- Vérifiez votre connexion internet
+- Vérifiez que votre clé API Gemini est valide
+- Regardez les logs du serveur dans le terminal
+
+---
+
+## 📝 API Endpoints
+
+### POST /api/chat
+
+Envoie un message au chatbot.
+
+**Request:**
+```json
+{
+  "message": "C'est quoi EEUEZ ?"
+}
+```
+
+**Response:**
+```json
+{
+  "response": "EEUEZ est une plateforme..."
+}
+```
+
+### GET /health
+
+Vérifie que le serveur fonctionne.
+
+**Response:**
+```json
+{
+  "status": "ok",
+  "message": "Serveur EEUEZ-Assist actif"
+}
+```
+
+---
+
+## 🔒 Sécurité
+
+- ✅ Clé API stockée dans `.env` (non partagée)
+- ✅ `.gitignore` configuré pour protéger `.env`
+- ✅ CORS activé pour le développement local
+- ⚠️ Pour la production, configurez CORS correctement
+
+---
+
+## 🚀 Prochaines améliorations possibles
+
+- [ ] Authentification utilisateur réelle
+- [ ] Sauvegarde de l'historique des conversations
+- [ ] Mode multi-utilisateurs
+- [ ] Personnalisation du contexte EEUEZ
+- [ ] Streaming des réponses (affichage progressif)
+- [ ] Déploiement en production (Vercel, Heroku, etc.)
+
+---
+
+## 👥 Auteurs
+
+Équipe EEUEZ - Hackathon G3
+
+---
+
+## 📄 Licence
+
+ISC

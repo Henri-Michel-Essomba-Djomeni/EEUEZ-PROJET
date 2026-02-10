@@ -52,12 +52,12 @@ export const CourseViewer = ({ course, onBack }: CourseViewerProps) => {
     }
 
     return (
-        <div className="container mx-auto py-6 max-w-7xl">
-            <Button variant="ghost" onClick={onBack} className="mb-6 hover:bg-slate-100">
-                <ArrowLeft className="mr-2 h-4 w-4" /> Retour au dashboard
+        <div className="container mx-auto py-4 max-w-7xl">
+            <Button variant="ghost" onClick={onBack} className="mb-4 hover:bg-slate-100 h-8 text-xs  font-bold uppercase  px-3">
+                <ArrowLeft className="mr-2 h-3 w-3" /> Retour dashboard
             </Button>
 
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
                 {/* Main Content (Video / Quiz) */}
                 <div className="lg:col-span-3 space-y-6">
                     <Card className="overflow-hidden border-none shadow-2xl bg-black aspect-video relative group">
@@ -96,26 +96,26 @@ export const CourseViewer = ({ course, onBack }: CourseViewerProps) => {
                         )}
                     </Card>
 
-                    <div className="space-y-4">
-                        <h1 className="text-3xl font-extrabold tracking-tight">{activeLesson.title}</h1>
-                        <div className="flex items-center gap-4 py-2 border-b border-slate-100">
-                            <Badge variant="secondary" className="bg-brand-50 text-brand-700 hover:bg-brand-100">
+                    <div className="space-y-3">
+                        <h1 className="text-xl font-bold tracking-tight  uppercase text-slate-900 leading-none">{activeLesson.title}</h1>
+                        <div className="flex items-center gap-3 py-1.5 border-b border-slate-100">
+                            <Badge variant="secondary" className="bg-brand-50 text-brand-700 hover:bg-brand-100 text-sm font-bold uppercase  h-5 px-2 ">
                                 {course.level}
                             </Badge>
-                            <span className="text-sm text-muted-foreground flex items-center gap-1">
-                                <Clock size={14} /> {activeLesson.duration}
+                            <span className="text-sm text-slate-400 font-bold uppercase  flex items-center gap-1 ">
+                                <Clock size={12} /> {activeLesson.duration}
                             </span>
                         </div>
-                        <p className="text-slate-600 leading-relaxed text-lg">{course.description}</p>
+                        <p className="text-slate-500 leading-relaxed text-sm ">{course.description}</p>
                     </div>
                 </div>
 
                 {/* Sidebar (Lesson List) */}
                 <div className="space-y-6">
-                    <Card className="rounded-2xl border-slate-200">
-                        <CardHeader className="pb-4 border-b border-slate-50">
-                            <CardTitle className="text-lg flex items-center gap-2">
-                                <BookOpen className="text-brand-600" size={20} />
+                    <Card className="rounded-xl border-slate-200 shadow-sm overflow-hidden">
+                        <CardHeader className="p-3 border-b border-slate-50">
+                            <CardTitle className="text-xs font-bold uppercase  flex items-center gap-2 text-slate-800 ">
+                                <BookOpen className="text-brand-600" size={16} />
                                 Contenu du cours
                             </CardTitle>
                         </CardHeader>
@@ -128,26 +128,26 @@ export const CourseViewer = ({ course, onBack }: CourseViewerProps) => {
                                             setActiveLesson(lesson);
                                             setShowQuiz(false);
                                         }}
-                                        className={`w-full p-3 rounded-xl flex items-center gap-3 transition-all group ${activeLesson.id === lesson.id && !showQuiz
-                                            ? 'bg-brand-600 text-white shadow-lg shadow-brand-500/30'
+                                        className={`w-full p-2.5 rounded-lg flex items-center gap-2.5 transition-all group ${activeLesson.id === lesson.id && !showQuiz
+                                            ? 'bg-brand-600 text-white shadow-md shadow-brand-500/30'
                                             : 'hover:bg-slate-50 text-slate-700'
                                             }`}
                                     >
-                                        <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${activeLesson.id === lesson.id && !showQuiz
+                                        <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 ${activeLesson.id === lesson.id && !showQuiz
                                             ? 'bg-white/20'
                                             : completedLessons.includes(lesson.id)
                                                 ? 'bg-brand-100 text-brand-600'
                                                 : 'bg-slate-100 text-slate-400 group-hover:bg-slate-200'
                                             }`}>
                                             {completedLessons.includes(lesson.id) ? (
-                                                <CheckCircle2 size={16} />
+                                                <CheckCircle2 size={14} />
                                             ) : (
-                                                <span className="text-xs font-bold">{idx + 1}</span>
+                                                <span className="text-sm font-bold">{idx + 1}</span>
                                             )}
                                         </div>
                                         <div className="flex-1 text-left min-w-0">
-                                            <p className="text-sm font-bold truncate leading-tight">{lesson.title}</p>
-                                            <p className={`text-[10px] uppercase font-bold tracking-wider ${activeLesson.id === lesson.id && !showQuiz ? 'text-white/60' : 'text-slate-400'
+                                            <p className="text-sm font-bold truncate leading-tight  uppercase">{lesson.title}</p>
+                                            <p className={`text-sm uppercase font-bold   ${activeLesson.id === lesson.id && !showQuiz ? 'text-white/60' : 'text-slate-400'
                                                 }`}>
                                                 {lesson.duration}
                                             </p>
@@ -159,18 +159,18 @@ export const CourseViewer = ({ course, onBack }: CourseViewerProps) => {
                                     <div className="pt-2">
                                         <button
                                             onClick={() => setShowQuiz(true)}
-                                            className={`w-full p-4 rounded-xl flex items-center gap-3 border-2 border-dashed transition-all ${showQuiz
-                                                ? 'border-brand-500 bg-brand-50 text-brand-900'
-                                                : 'border-slate-200 hover:border-brand-500/50 hover:bg-slate-50 text-slate-600'
+                                            className={`w-full p-3 rounded-lg flex items-center gap-3 border-2 border-dashed transition-all ${showQuiz
+                                                ? 'border-brand-500 bg-brand-50 text-brand-900 shadow-sm'
+                                                : 'border-slate-100 hover:border-brand-500/50 hover:bg-slate-50 text-slate-600'
                                                 }`}
                                         >
-                                            <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${showQuiz ? 'bg-brand-600 text-white' : 'bg-yellow-100 text-yellow-600'
+                                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center shrink-0 ${showQuiz ? 'bg-brand-600 text-white' : 'bg-brand-50 text-brand-600'
                                                 }`}>
                                                 <Award size={18} />
                                             </div>
                                             <div className="flex-1 text-left">
-                                                <p className="text-xs font-black uppercase tracking-tighter">Évaluation finale</p>
-                                                <p className="text-[10px] font-medium opacity-60">Valider vos compétences</p>
+                                                <p className="text-sm font-bold uppercase  ">Évaluation finale</p>
+                                                <p className="text-sm font-bold uppercase  text-slate-400 ">Valider compétences</p>
                                             </div>
                                         </button>
                                     </div>
@@ -179,14 +179,14 @@ export const CourseViewer = ({ course, onBack }: CourseViewerProps) => {
                         </CardContent>
                     </Card>
 
-                    <Card className="bg-brand-600 text-white border-none shadow-xl shadow-brand-500/20 overflow-hidden relative">
+                    <Card className="bg-brand-600 text-white border-none shadow-md shadow-brand-500/20 overflow-hidden relative rounded-xl">
                         <div className="absolute -right-4 -bottom-4 opacity-10">
-                            <Trophy size={120} />
+                            <Trophy size={100} />
                         </div>
-                        <CardContent className="p-6 relative z-10">
-                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-brand-200 mb-4">Progression</p>
-                            <div className="space-y-4">
-                                <div className="relative h-2 w-full bg-white/20 rounded-full overflow-hidden">
+                        <CardContent className="p-4 relative z-10">
+                            <p className="text-sm font-bold uppercase  text-brand-200 mb-2 ">Progression</p>
+                            <div className="space-y-3">
+                                <div className="relative h-1.5 w-full bg-white/20 rounded-full overflow-hidden">
                                     <motion.div
                                         initial={{ width: 0 }}
                                         animate={{ width: `${(completedLessons.length / course.lessons.length) * 100}%` }}
@@ -195,10 +195,10 @@ export const CourseViewer = ({ course, onBack }: CourseViewerProps) => {
                                     />
                                 </div>
                                 <div className="flex justify-between items-end">
-                                    <span className="text-2xl font-black">
+                                    <span className="text-xl font-bold ">
                                         {Math.round((completedLessons.length / course.lessons.length) * 100)}%
                                     </span>
-                                    <span className="text-[10px] font-bold uppercase text-brand-100">
+                                    <span className="text-sm font-bold uppercase  text-brand-100 ">
                                         {completedLessons.length}/{course.lessons.length} Leçons
                                     </span>
                                 </div>

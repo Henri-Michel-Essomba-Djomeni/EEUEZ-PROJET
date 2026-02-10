@@ -57,50 +57,50 @@ export const CourseDetail = () => {
         <div className="min-h-screen bg-background p-6">
             <div className="max-w-7xl mx-auto space-y-6">
                 {/* Header */}
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3">
                     <button
                         onClick={() => navigate(-1)}
-                        className="p-2 hover:bg-secondary rounded-lg transition-colors"
+                        className="p-1.5 hover:bg-secondary rounded-lg transition-colors"
                     >
-                        <ArrowLeft size={24} />
+                        <ArrowLeft size={18} />
                     </button>
                     <div className="flex-1">
-                        <h1 className="text-3xl font-bold uppercase italic tracking-tighter">
+                        <h1 className="text-lg font-bold uppercase  tracking-tighter text-slate-900">
                             {course.title}
                         </h1>
-                        <p className="text-sm text-muted-foreground mt-1">{course.description}</p>
+                        <p className="text-sm text-muted-foreground mt-0.5 line-clamp-1 ">{course.description}</p>
                     </div>
                 </div>
 
                 {/* Tabs */}
-                <div className="glass-panel rounded-2xl border border-border overflow-hidden">
-                    <div className="flex border-b border-border">
+                <div className="glass-panel rounded-xl border border-border overflow-hidden shadow-sm">
+                    <div className="flex border-b border-border h-10">
                         <button
                             onClick={() => setActiveTab('lessons')}
-                            className={`flex-1 px-6 py-4 font-bold flex items-center justify-center gap-2 transition-all ${activeTab === 'lessons'
-                                    ? 'bg-brand-500 text-white'
-                                    : 'hover:bg-secondary'
+                            className={`flex-1 px-4 font-bold uppercase  text-sm flex items-center justify-center gap-2 transition-all  ${activeTab === 'lessons'
+                                ? 'bg-brand-600 text-white'
+                                : 'hover:bg-brand-50 text-slate-500'
                                 }`}
                         >
-                            <BookOpen size={20} />
+                            <BookOpen size={16} />
                             Leçons
                         </button>
                         <button
                             onClick={() => setActiveTab('evaluations')}
-                            className={`flex-1 px-6 py-4 font-bold flex items-center justify-center gap-2 transition-all ${activeTab === 'evaluations'
-                                    ? 'bg-brand-500 text-white'
-                                    : 'hover:bg-secondary'
+                            className={`flex-1 px-4 font-bold uppercase  text-sm flex items-center justify-center gap-2 transition-all  ${activeTab === 'evaluations'
+                                ? 'bg-brand-600 text-white'
+                                : 'hover:bg-brand-50 text-slate-500'
                                 }`}
                         >
-                            <ClipboardList size={20} />
+                            <ClipboardList size={16} />
                             Évaluations
                         </button>
                     </div>
 
-                    <div className="p-6">
+                    <div className="p-4">
                         <motion.div
                             key={activeTab}
-                            initial={{ opacity: 0, y: 20 }}
+                            initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.3 }}
                         >
