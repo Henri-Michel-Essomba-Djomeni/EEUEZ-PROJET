@@ -51,27 +51,7 @@ Ouvrez un terminal dans le dossier `backend/` :
 
 ```bash
 cd backend
-npm i
-npm install express cors helmet dotenv mysql2 jsonwebtoken bcryptjs
-```
-
-Verifier que package.json contient
-
-```bash
-"scripts": {
-    "start": "ts-node src/app.ts",
-    "dev": "nodemon --exec ts-node src/app.ts",
-    "migrate": "ts-node src/scripts/migrate.ts",
-    "seed": "ts-node src/scripts/seed.ts",
-    "seed:admin": "ts-node src/scripts/seed-admin.ts"
-  },
-```
-
-Executer les commandes de migration
-
-```bash
-npm run migrate
-npm run seed
+node server.js
 ```
 
 Vous devriez voir :
