@@ -16,6 +16,7 @@ import { Register } from './pages/Register'
 import { Profile } from './pages/Profile'
 import { Evaluations } from './pages/Evaluations'
 import { LandingPage } from './pages/LandingPage'
+import { MainLandingPage } from './pages/MainLandingPage'
 import { Certifications } from './pages/Certifications'
 import { CourseDetail } from './pages/CourseDetail'
 import { useState } from 'react'
@@ -128,8 +129,11 @@ const AppContent = () => {
                 user ? <Navigate to="/dashboard" replace /> :
                     <Register onRegister={() => login('demo@student.com')} onSwitch={() => { }} />
             } />
-            <Route path="/" element={
+            <Route path="/academy" element={
                 !user ? <LandingPage /> : <Navigate to="/dashboard" replace />
+            } />
+            <Route path="/" element={
+                !user ? <MainLandingPage /> : <Navigate to="/dashboard" replace />
             } />
             <Route path="/*" element={<ProtectedRoutes />} />
         </Routes>

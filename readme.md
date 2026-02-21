@@ -53,6 +53,18 @@ Ouvrez un terminal dans le dossier `backend/` :
 cd backend
 npm i
 npm install express cors helmet dotenv mysql2 jsonwebtoken bcryptjs
+npm install -g nodemon
+npm install -g ts-node typescript
+npm install --save-dev @types/express @types/cors
+npm install --save-dev @types/jsonwebtoken
+npm install --save-dev @types/bcryptjs
+npm install --save-dev @types/mysql2
+npm install --save-dev @types/dotenv
+npm install --save-dev @types/helmet
+npm install --save-dev @types/cors
+npm install --save-dev @types/jsonwebtoken
+npm install --save-dev @types/bcryptjs
+npm install --save-dev @types/mysql2
 ```
 
 Verifier que package.json contient

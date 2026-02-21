@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Award, Download, Share2, Trophy, Star, Loader2 } from 'lucide-react';
-import { certificationsAPI } from '../services/api';
+import { Award, Download, Share2, Trophy, Star, Loader2, CheckCircle2 } from 'lucide-react';
+import { certificationsAPI, authAPI } from '../services/api';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
+import { CertificateTemplate } from '../components/CertificateTemplate';
 
 interface Certificate {
     id: string;
@@ -19,12 +22,18 @@ interface Certificate {
 export const Certifications = () => {
     const [certificates, setCertificates] = useState<Certificate[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [isDownloading, setIsDownloading] = useState<string | null>(null);
+    const [user, setUser] = useState<any>(null);
 
     useEffect(() => {
         const fetchCerts = async () => {
             try {
-                const data = await certificationsAPI.getMyCertifications();
-                setCertificates(data);
+                const [certsData, userData] = await Promise.all([
+                    certificationsAPI.getMyCertifications(),
+                    authAPI.getCurrentUser()
+                ]);
+                setCertificates(certsData);
+                setUser(userData);
             } catch (error) {
                 console.error("Failed to fetch certifications", error);
                 toast.error("Impossible de charger les certifications.");
@@ -34,6 +43,44 @@ export const Certifications = () => {
         };
         fetchCerts();
     }, []);
+
+    const handleDownload = async (cert: Certificate) => {
+        setIsDownloading(cert.id);
+        const toastId = toast.loading("Génération de votre certificat premium...");
+
+        try {
+            // Give React a moment to render the hidden template if needed
+            // Though we use a technique where it's always there but hidden from view
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            const element = document.getElementById('certificate-template');
+            if (!element) throw new Error("Template not found");
+
+            const canvas = await html2canvas(element, {
+                scale: 2, // High quality
+                useCORS: true,
+                logging: false,
+                backgroundColor: '#ffffff'
+            });
+
+            const imgData = canvas.toDataURL('image/png');
+            const pdf = new jsPDF({
+                orientation: 'landscape',
+                unit: 'px',
+                format: [1123, 794] // Matches template size
+            });
+
+            pdf.addImage(imgData, 'PNG', 0, 0, 1123, 794);
+            pdf.save(`Certificat_EEUEZ_${cert.courseTitle.replace(/\s+/g, '_')}.pdf`);
+
+            toast.success("Certificat téléchargé avec succès !", { id: toastId });
+        } catch (error) {
+            console.error("Download failed", error);
+            toast.error("Échec du téléchargement du certificat.", { id: toastId });
+        } finally {
+            setIsDownloading(null);
+        }
+    };
 
     return (
         <div className="container mx-auto py-6 px-4 max-w-6xl">
@@ -102,8 +149,17 @@ export const Certifications = () => {
                                     </div>
 
                                     <div className="flex gap-2 pt-1">
-                                        <button className="flex-1 h-8 bg-brand-600 hover:bg-brand-700 text-white rounded-lg font-bold uppercase  text-xs shadow-sm transition-all hover:scale-[1.02] flex items-center justify-center gap-1">
-                                            <Download className="h-3 w-3" /> Télécharger
+                                        <button
+                                            onClick={() => handleDownload(cert)}
+                                            disabled={isDownloading === cert.id}
+                                            className="flex-1 h-8 bg-brand-600 hover:bg-brand-700 disabled:opacity-50 text-white rounded-lg font-bold uppercase  text-xs shadow-sm transition-all hover:scale-[1.02] flex items-center justify-center gap-1"
+                                        >
+                                            {isDownloading === cert.id ? (
+                                                <Loader2 className="h-3 w-3 animate-spin" />
+                                            ) : (
+                                                <Download className="h-3 w-3" />
+                                            )}
+                                            {isDownloading === cert.id ? "Génération..." : "Télécharger"}
                                         </button>
                                         <button className="w-8 h-8 rounded-lg border border-slate-200 text-slate-400 hover:text-brand-600 hover:border-brand-500 transition-all flex items-center justify-center">
                                             <Share2 size={14} />
@@ -132,6 +188,20 @@ export const Certifications = () => {
                     </Button>
                 </div>
             )}
+
+            {/* Hidden Certificate Template for PDF Generation */}
+            <div className="fixed -left-[2000px] top-0 pointer-events-none">
+                {isDownloading && certificates.find(c => c.id === isDownloading) && (
+                    <CertificateTemplate
+                        studentName={`${user?.firstName || 'Étudiant'} ${user?.lastName || 'EEUEZ'}`}
+                        courseTitle={certificates.find(c => c.id === isDownloading)!.courseTitle}
+                        date={new Date(certificates.find(c => c.id === isDownloading)!.issueDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
+                        instructor={certificates.find(c => c.id === isDownloading)!.instructor}
+                        certificateId={certificates.find(c => c.id === isDownloading)!.certificateCode || isDownloading.substring(0, 12).toUpperCase()}
+                        score={certificates.find(c => c.id === isDownloading)!.score}
+                    />
+                )}
+            </div>
         </div>
     );
 };
